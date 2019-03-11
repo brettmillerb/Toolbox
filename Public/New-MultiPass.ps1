@@ -45,8 +45,14 @@ function New-Multipass {
     )
     
     begin {
+        if (-not ($PSBoundParameters.ContainsKey('FileName'))) {
+            $FileName = 'MultiPass.xml'
+        }
+        else {
+            $FileName = "{0}{1}" -f $FileName, '.xml'
+        }
         $output = @{}
-        $outpath = Join-Path -Path $Path -ChildPath 'MultiPass.xml'
+        $outpath = Join-Path -Path $Path -ChildPath $FileName
     }
     
     process {
