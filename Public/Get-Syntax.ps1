@@ -1,8 +1,11 @@
 function Get-Syntax {
     [CmdletBinding()]
+    [Alias('synt')]    
     param (
         $Command,
 
+        [Parameter()]
+        [Alias('Norm')]
         [switch]
         $Normalise
     )
@@ -10,12 +13,12 @@ function Get-Syntax {
     $check = Get-Command -Name $Command
 
     $params = @{
-        Name =  if ($check.CommandType -eq 'Alias') {
-                    Get-Command -Name $check.Definition
-                }
-                else {
-                    $Command
-                }
+        Name   = if ($check.CommandType -eq 'Alias') {
+            Get-Command -Name $check.Definition
+        }
+        else {
+            $Command
+        }
         Syntax = $true
     }
     if ($Normalise) {
