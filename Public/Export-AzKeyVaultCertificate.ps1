@@ -9,6 +9,8 @@ function Export-AzKeyVaultCertificate {
         [string]
         $CertName,
 
+        $ExportedCertName,
+
         [securestring]
         $Credential,
 
@@ -16,8 +18,14 @@ function Export-AzKeyVaultCertificate {
         $ExportPath = $PWD
     )
 
+    if ($ExportedCertName) {
+        $outputCertName = $ExportedCertName
+    }
+    else {
+        $outputCertName = $CertName
+    }
 
-    $pfxPath = Join-Path -Path $ExportPath -ChildPath ("{0}.pfx" -f $CertName)
+    $pfxPath = Join-Path -Path $ExportPath -ChildPath ("{0}.pfx" -f $outputCertName)
 
     $kvCertificate = Get-AzKeyVaultSecret -VaultName $VaultName -SecretName $CertName
 
@@ -25,7 +33,7 @@ function Export-AzKeyVaultCertificate {
         throw "No Certificate Found in KeyVault."
     }
 
-    $certBytes = [convert]::FromBase64String($kvcerty.SecretValueText)
+    $certBytes = [convert]::FromBase64String(($kvCertificate.SecretValue | ConvertFrom-SecureString -AsPlainText))
     $certCollection = [System.Security.Cryptography.X509Certificates.X509Certificate2Collection]::new()
     $certCollection.Import(
         $certbytes,
