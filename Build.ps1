@@ -1,6 +1,8 @@
 [cmdletbinding()]
 param (
-    $SourcePath = $psscriptroot,
+
+    $SourcePath = $PSScriptRoot,
+
     $OutputFolder = 'output'
 )
 
